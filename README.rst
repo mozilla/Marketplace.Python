@@ -6,7 +6,8 @@ Python
 
 Install requirements
 
-    pip install requirements.pip
+    cd python
+    pip install requirements.txt
 
 Test
 
