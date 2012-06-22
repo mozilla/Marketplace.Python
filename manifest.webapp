@@ -3,9 +3,9 @@
   "name": "MozillaBall",
   "description": "Exciting Open Web development action!",
   "icons": {
-	"16": "/img/icon-16.png",
-	"48": "/img/icon-48.png",
-	"128": "/img/icon-128.png"
+	"16": "/MarketplaceClientExample/img/icon-16.png",
+	"48": "/MarketplaceClientExample/img/icon-48.png",
+	"128": "/MarketplaceClientExample/img/icon-128.png"
   },
   "developer": {
 	"name": "Mozilla Labs",
