@@ -118,7 +118,7 @@ class Marketplace:
         return requests.delete(url, headers=headers, data='')
 
     def validate_manifest(self, manifest_url):
-        """Send a url to with manifest to validate manifest API
+        """Order manifest validation
 
         :returns: dict with an ``id`` to check the result
         """
@@ -149,6 +149,8 @@ class Marketplace:
             * validation dict if not valid
         """
         response = self.get_manifest_validation_result(manifest_id)
+        if response.status_code != 200:
+            raise Exception(response.status_code)
         content = json.loads(response.content)
         if not content['processed']:
             return None

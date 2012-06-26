@@ -14,7 +14,7 @@ from mock import Mock
 from nose import SkipTest
 from nose.tools import eq_
 
-from marketplace import Marketplace
+from lib.marketplace import Marketplace
 
 log = logging.getLogger('marketplace.%s' % __name__)
 
