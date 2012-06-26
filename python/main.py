@@ -10,8 +10,8 @@ commands = {'validate_manifest': app.commands.validate_manifest,
            'create': app.commands.create,
            'status': app.commands.status}
 if len(sys.argv) < 3 or sys.argv[1] not in commands:
-    print >> sys.stderr, ('Please provide one of the commands with an '
-            'argument:\n%s' % ', '.join(commands.keys()))
+    sys.stderr.write(('Please provide one of the commands with an '
+            'argument:\n%s\n' % ', '.join(commands.keys())))
     sys.exit(1)
 
 command = sys.argv[1]
@@ -26,7 +26,7 @@ auth = Marketplace(
 result = commands[command](auth, sys.argv[2])
 
 if result['success']:
-    print result['message']
+    sys.stdout.write('%s\n' % result['message'])
 else:
-    print >> sys.stderr, result['message']
+    sys.stderr.write('%s\n' % result['message'])
     sys.exit(1)

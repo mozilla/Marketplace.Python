@@ -45,8 +45,8 @@ def status(auth, app_id):
     response = auth.status(app_id)
     if response.status_code != 200:
         return {'success': False,
-                'message': 'Status code: %d, \n%s' % (response.status_code,
-                                                      response.content)}
+                'message': 'Error, status code: %d, \nMessage: %s' % (
+                    response.status_code, response.content)}
     content = json.loads(response.content)
     return {'success': True,
             'message': '\n'.join(
