@@ -6,13 +6,13 @@ Python
 
 Install requirements
 --------------------
-
+::
     cd python
     pip install requirements.txt
 
 Test
 ----
-
+::
     nosetests
 
 Usage
