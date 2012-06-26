@@ -25,7 +25,7 @@ Usage
 
 * Validate manifest will return ``manifest_id`` which is needed in next steps:
 
-    python main.py validate_manifest http://example.com/manifest.webapp
+    python main.py validate_manifest http://mozilla.github.com/MarketplaceClientExample/manifest.webapp
 
 * Check if the manifest is valid:
 

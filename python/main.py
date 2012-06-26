@@ -1,13 +1,17 @@
 import sys
-import app.commands as commands
+
+import app.commands
 import app.config as config
+
 from lib.marketplace import Marketplace
 
-allowed_commands = ['validate_manifest', 'is_manifest_valid', 'create',
-                    'status']
-if len(sys.argv) < 2 or sys.argv[1] not in allowed_commands:
-    print >> sys.stderr, ('Please provide one of the commands:\n'
-            '%s' % ', '.join(allowed_commands))
+commands = {'validate_manifest': app.commands.validate_manifest,
+           'is_manifest_valid': app.commands.is_manifest_valid,
+           'create': app.commands.create,
+           'status': app.commands.status}
+if len(sys.argv) < 3 or sys.argv[1] not in commands:
+    print >> sys.stderr, ('Please provide one of the commands with an '
+            'argument:\n%s' % ', '.join(commands.keys()))
     sys.exit(1)
 
 command = sys.argv[1]
@@ -15,18 +19,11 @@ command = sys.argv[1]
 auth = Marketplace(
         domain=config.MARKETPLACE_DOMAIN,
         protocol=config.MARKETPLACE_PROTOCOL,
-        port=config.MARKETPLACE_PORT)
-auth.consumer = config.CONSUMER
+        port=config.MARKETPLACE_PORT,
+        consumer_key=config.CONSUMER_KEY,
+        consumer_secret=config.CONSUMER_SECRET)
 
-if command == 'validate_manifest':
-    manifest_url = sys.argv[2] if len(sys.argv) == 3 else config.DEF_WEBAPP_URL
-    result = commands.validate_manifest(auth, manifest_url)
-elif command == 'is_manifest_valid':
-    result = commands.is_manifest_valid(auth, sys.argv[2])
-elif command == 'create':
-    result = commands.create(auth, sys.argv[2])
-elif command == 'status':
-    result = commands.status(auth, sys.argv[2])
+result = commands[command](auth, sys.argv[2])
 
 if result['success']:
     print result['message']

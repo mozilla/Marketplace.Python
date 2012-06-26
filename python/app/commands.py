@@ -1,9 +1,11 @@
-import oauth2 as oauth
 import time
 import requests
+
 import json
+import oauth2 as oauth
 
 import config
+
 from lib.marketplace import Marketplace
 
 def validate_manifest(auth, manifest_url):
