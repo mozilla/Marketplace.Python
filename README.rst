@@ -3,16 +3,15 @@ Examples of the Marketplace clients
 
 Python
 ######
+**Marketplace command line client**
 
-Install requirements
---------------------
-::
+Install requirements::
+
     cd python
     pip install requirements.txt
 
-Test
-----
-::
+Test::
+
     nosetests
 
 Usage
