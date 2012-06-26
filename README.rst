@@ -18,10 +18,10 @@ Test
 Usage
 -----
 
-* Set CONSUMER_KEY and CONSUMER_SECRET environment
+* Set CONSUMER_KEY and CONSUMER_SECRET environment variables:
 
-  export CONSUMER_KEY=yourconsumerkey
-  export CONSUMER_SECRET=yourconsumersecret
+    export CONSUMER_KEY=yourconsumerkey
+    export CONSUMER_SECRET=yourconsumersecret
 
 * Validate manifest will return ``manifest_id`` which is needed in next steps:
 
