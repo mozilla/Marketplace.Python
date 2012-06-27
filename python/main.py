@@ -1,3 +1,4 @@
+import argparse
 import sys
 
 import app.commands
@@ -8,13 +9,15 @@ from lib.marketplace import Marketplace
 commands = {'validate_manifest': app.commands.validate_manifest,
            'is_manifest_valid': app.commands.is_manifest_valid,
            'create': app.commands.create,
-           'status': app.commands.status}
-if len(sys.argv) < 3 or sys.argv[1] not in commands:
-    sys.stderr.write(('Please provide one of the commands with an '
-            'argument:\n%s\n' % ', '.join(commands.keys())))
-    sys.exit(1)
+           'status': app.commands.status,
+           'add_screenshot': app.commands.add_screenshot}
 
-command = sys.argv[1]
+parser = argparse.ArgumentParser(description='Command line Marketplace client')
+parser.add_argument('method', type=str, help='command to be run on arguments',
+        choices=commands.keys())
+parser.add_argument('attrs', metavar='attr', type=str, nargs='+',
+        help='command arguments')
+args = parser.parse_args()
 
 auth = Marketplace(
         domain=config.MARKETPLACE_DOMAIN,
@@ -23,7 +26,7 @@ auth = Marketplace(
         consumer_key=config.CONSUMER_KEY,
         consumer_secret=config.CONSUMER_SECRET)
 
-result = commands[command](auth, sys.argv[2])
+result = commands[args.method](auth, *args.attrs)
 
 if result['success']:
     sys.stdout.write('%s\n' % result['message'])
