@@ -7,8 +7,6 @@ CONSUMER_KEY = (environ['CONSUMER_KEY']
 CONSUMER_SECRET = (environ['CONSUMER_SECRET']
         if 'CONSUMER_SECRET' in environ else 'consumer_secret')
 
-CONSUMER = oauth.Consumer(CONSUMER_KEY, CONSUMER_SECRET)
-
 MARKETPLACE_PORT = (environ['MARKETPLACE_PORT']
         if 'MARKETPLACE_PORT' in environ else 443)
 MARKETPLACE_DOMAIN = (environ['MARKETPLACE_DOMAIN']

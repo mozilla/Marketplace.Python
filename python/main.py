@@ -10,7 +10,9 @@ commands = {'validate_manifest': app.commands.validate_manifest,
            'is_manifest_valid': app.commands.is_manifest_valid,
            'create': app.commands.create,
            'status': app.commands.status,
-           'add_screenshot': app.commands.add_screenshot}
+           'add_screenshot': app.commands.add_screenshot,
+           'get_screenshot': app.commands.get_screenshot,
+           'del_screenshot': app.commands.del_screenshot}
 
 parser = argparse.ArgumentParser(description='Command line Marketplace client')
 parser.add_argument('method', type=str, help='command to be run on arguments',

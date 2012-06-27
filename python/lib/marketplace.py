@@ -10,6 +10,8 @@ import logging
 import time
 import urllib
 
+from base64 import b64encode
+
 import httplib2
 import oauth2 as oauth
 import requests
@@ -26,6 +28,8 @@ urls = {'validate': '/apps/validation/',
         'validation_result': '/apps/validation/%s/',
         'create': '/apps/app/',
         'app': '/apps/app/%s/',
+        'create_screenshot': '/apps/preview/?app=%s',
+        'screenshot': '/apps/preview/%s/',
 }
 
 def _get_args(consumer):
@@ -205,7 +209,7 @@ class Marketplace:
 
         :returns: HttResponse:
             * status_code (int) 200 if successful
-            * content (dict) with all available app information
+            * content (JSON String) with all available app information
         """
         return self.get(self.url('app') % app_id)
 
@@ -214,3 +218,40 @@ class Marketplace:
         """
         # XXX: This isn't yet implemented on API
         return self.remove(self.url('app') % app_id)
+
+    def create_screenshot(self, app_id, filename, position=1):
+        """Add a screenshot to the web app identified by by ``app_id``.
+        Screenshots are ordered by ``position``.
+
+        :returns: HttpResponse:
+            * status_code (int) 201 is successful
+            * content (dict) containing screenshot data
+        """
+        # prepare file for upload
+        with open(filename, 'rb') as s_file:
+            s_content = s_file.read()
+        s_encoded = b64encode(s_content)
+        url = self.url('create_screenshot') % app_id
+        # TODO find the mimetype of the file
+        mimetype = 'image/jpg'
+        data = {'position': position,
+                'file': {'type': mimetype,
+                         'data': s_encoded}}
+        return self.post(url, data)
+
+    def get_screenshot(self, screenshot_id):
+        """Get information about screenshot or video
+
+        :returns HttpResponse:
+            * status_code (int) 200 is successful
+            * content (JSON string)
+        """
+        return self.get(self.url('screenshot') % screenshot_id)
+
+    def del_screenshot(self, screenshot_id):
+        """Deletes screenshot
+
+        :returns: HttpResponse:
+            * status_code (int) 204 if successful
+        """
+        return self.get(self.url('screenshot') % screenshot_id)
