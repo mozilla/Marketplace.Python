@@ -51,3 +51,33 @@ def status(auth, app_id):
     return {'success': True,
             'message': '\n'.join(
                 ['%s: %s' % (k, v) for k, v in content.items()])}
+
+def add_screenshot(auth, app_id, filename):
+    response = auth.create_screenshot(app_id, filename)
+    if response.status_code != 201:
+        return {'success': False,
+                'message': 'Error, status code: %d, \nMessage: %s' % (
+                    response.status_code, response.content)}
+    return {'success': True,
+            'message': '\n'.join(
+                ['%s: %s' % (k, v) for k, v in response.content.items()])}
+
+def get_screenshot(auth, screenshot_id):
+    response = auth.get_screenshot(screenshot_id)
+    if response.status_code != 200:
+        return {'success': False,
+                'message': 'Error, status code: %d, \nMessage: %s' % (
+                    response.status_code, response.content)}
+    content = json.loads(response.content)
+    return {'success': True,
+            'message': '\n'.join(
+                ['%s: %s' % (k, v) for k, v in response.content.items()])}
+
+def del_screenshot(auth, screenshot_id):
+    response = auth.del_screenshot(screenshot_id)
+    if response.status_code != 204:
+        return {'success': False,
+                'message': 'Error, status code: %d, \nMessage: %s' % (
+                    response.status_code, response.content)}
+    return {'success': True,
+            'message': 'Screenshot deleted'}
