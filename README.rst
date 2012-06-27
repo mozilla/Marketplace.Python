@@ -37,3 +37,9 @@ Usage
 * Display status of the app::
 
     python main.py status your_app_id
+
+* Add screenshot (currently only JPEG) to app, some data including id will be returned::
+
+    python main.py add_screenshot your_app_id ~/data/some.jpg
+
+

@@ -173,7 +173,7 @@ class Marketplace:
                 * slug (string) unique name in marketplace
         """
         return self.post(self.url('create'),
-                {'manifest_id': '%s' % manifest_id})
+                {'manifest': '%s' % manifest_id})
 
     def update(self, app_id, data):
         """Update app identified by app_id with data
