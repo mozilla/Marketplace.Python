@@ -8,6 +8,7 @@ import config
 
 from lib.marketplace import Marketplace
 
+
 def validate_manifest(auth, manifest_url):
     response = auth.validate_manifest(manifest_url)
     if response.status_code == 201:

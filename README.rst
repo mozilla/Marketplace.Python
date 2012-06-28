@@ -22,7 +22,7 @@ Usage
     export CONSUMER_KEY=yourconsumerkey
     export CONSUMER_SECRET=yourconsumersecret
 
-* Validate manifest will return ``manifest_id`` which is needed in next steps::
+* Validate manifest. Will return ``manifest_id`` which is needed for the next steps::
 
     python main.py validate_manifest http://mozilla.github.com/MarketplaceClientExample/manifest.webapp
 
