@@ -72,7 +72,7 @@ def get_screenshot(auth, screenshot_id):
     content = json.loads(response.content)
     return {'success': True,
             'message': '\n'.join(
-                ['%s: %s' % (k, v) for k, v in response.content.items()])}
+                ['%s: %s' % (k, v) for k, v in content.items()])}
 
 def del_screenshot(auth, screenshot_id):
     response = auth.del_screenshot(screenshot_id)
