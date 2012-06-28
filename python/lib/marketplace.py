@@ -113,6 +113,9 @@ class Marketplace:
         """
         body = json.dumps(data)
         headers = self.prepare_request('PUT', url, body, consumer)
+        print url
+        print headers
+        print body
         return requests.put(url, headers=headers, data=body)
 
     def remove(self, url, consumer=None):
@@ -197,11 +200,18 @@ class Marketplace:
             * content (dict) or empty if successful
         """
         assert ('name' in data
+            and data['name']
             and 'summary' in data
             and 'categories' in data
+            and data['categories']
             and 'support_email' in data
+            and data['support_email']
             and 'device_types' in data
-            and 'payment_type' in data)
+            and data['device_types']
+            and 'payment_type' in data
+            and data['payment_type']
+            and 'privacy_policy' in data
+            and data['privacy_policy'])
         return self.put(self.url('app') % app_id, data)
 
     def status(self, app_id):
@@ -254,4 +264,4 @@ class Marketplace:
         :returns: HttpResponse:
             * status_code (int) 204 if successful
         """
-        return self.get(self.url('screenshot') % screenshot_id)
+        return self.delete(self.url('screenshot') % screenshot_id)

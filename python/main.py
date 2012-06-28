@@ -10,6 +10,7 @@ commands = {'validate_manifest': app.commands.validate_manifest,
            'is_manifest_valid': app.commands.is_manifest_valid,
            'create': app.commands.create,
            'status': app.commands.status,
+           'update': app.commands.update,
            'add_screenshot': app.commands.add_screenshot,
            'get_screenshot': app.commands.get_screenshot,
            'del_screenshot': app.commands.del_screenshot}
