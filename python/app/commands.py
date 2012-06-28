@@ -33,11 +33,12 @@ def is_manifest_valid(auth, manifest_id):
 
 def create(auth, manifest_id):
     response = auth.create(manifest_id)
+    content = json.loads(response.content)
     if response.status_code == 201:
         return {'success': True,
                 'message': ('Your app has been added to marketplace!\n'
-                            'id: %d, slug: %s') % (response.content['id'],
-                                                   response.content['slug'])}
+                            'id: %d, slug: %s') % (content['id'],
+                                                   content['slug'])}
     else:
         return {'success': False,
                 'message': response.content}
@@ -59,9 +60,10 @@ def add_screenshot(auth, app_id, filename):
         return {'success': False,
                 'message': 'Error, status code: %d, \nMessage: %s' % (
                     response.status_code, response.content)}
+    content = json.loads(response.content)
     return {'success': True,
             'message': '\n'.join(
-                ['%s: %s' % (k, v) for k, v in response.content.items()])}
+                ['%s: %s' % (k, v) for k, v in content.items()])}
 
 def get_screenshot(auth, screenshot_id):
     response = auth.get_screenshot(screenshot_id)
