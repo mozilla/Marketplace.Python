@@ -4,8 +4,9 @@ tests.testMarketplace
 """
 import json
 import logging
+import os
 
-from os import environ
+from base64 import b64encode
 
 import httplib2
 import requests
@@ -14,7 +15,7 @@ from mock import Mock
 from nose import SkipTest
 from nose.tools import eq_
 
-from lib.marketplace import Marketplace
+from ..lib.marketplace import Marketplace
 
 log = logging.getLogger('marketplace.%s' % __name__)
 
@@ -35,12 +36,10 @@ class Response:
 class TestMarketplace(object):
 
     def setUp(self):
-        consumer_key = (environ['CONSUMER_KEY']
-                if 'CONSUMER_KEY' in environ else 'consumer_key')
-        consumer_secret = (environ['CONSUMER_SECRET']
-                if 'CONSUMER_SECRET' in environ else 'consumer_secret')
-        log.debug(consumer_key)
-        log.debug(consumer_secret)
+        consumer_key = (os.environ['CONSUMER_KEY']
+                if 'CONSUMER_KEY' in os.environ else 'consumer_key')
+        consumer_secret = (os.environ['CONSUMER_SECRET']
+                if 'CONSUMER_SECRET' in os.environ else 'consumer_secret')
         self.marketplace = Marketplace(
                 domain=MARKETPLACE_DOMAIN,
                 port=MARKETPLACE_PORT,
@@ -67,13 +66,12 @@ class TestMarketplace(object):
                 'valid': False,
                 'validation': ''}
 
-        requests.post = Mock(return_value=Response(201, json.dumps(resp)))
+        requests.post = Mock(return_value=Response(201, resp))
 
         response = self.marketplace.validate_manifest(manifest_url)
         log.debug(response.content)
         log.debug(response.status_code)
-        content = json.loads(response.content)
-        eq_(content['id'], 'abcd')
+        eq_(response.content['id'], 'abcd')
 
     def test_get_validation_result(self):
         resp = {'id': 'abcd',
@@ -183,3 +181,22 @@ class TestMarketplace(object):
         response = self.marketplace.delete(1)
         eq_(response.status_code, 204)
         assert not response.content
+
+    def test_add_screenshot(self):
+        path = lambda *a: os.path.join(
+                            os.path.dirname(os.path.abspath(__file__)), *a)
+        resp = {'filetype': 'image/png',
+                'thumbnail_url': 'https://marketplace-dev-cdn.allizom.org/img/uploads/previews/thumbs/71/71761.png?modified=1340899716',
+                'image_url': 'https://marketplace-dev-cdn.allizom.org/img/uploads/previews/full/71/71761.png?modified=1340899716',
+                'position': 1,
+                'id': 71761,
+                'resource_uri': '/en-US/api/apps/preview/71761'}
+        requests.post = Mock(return_value=Response(201, resp))
+        response = self.marketplace.create_screenshot(123, path('mozilla.jpg'))
+        eq_(response.status_code, 201)
+        eq_(response.content['position'], 1)
+        with open(path('mozilla.jpg')) as moz_file:
+            b64_file = b64encode(moz_file.read())
+        data = json.loads(requests.post.call_args[1]['data'])
+        eq_(data['position'], 1)
+        eq_(data['file']['data'], b64_file)
