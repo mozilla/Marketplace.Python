@@ -57,18 +57,16 @@ def status(auth, app_id):
 
 def update(auth, app_id):
     editable_keys = ['name', 'device_types', 'summary', 'support_email',
-                     'homepage', 'categories', 'description', 'privacy_policy']
+                     'homepage', 'categories', 'description', 'privacy_policy',
+                     'support_url', 'payment_type']
     truthy_keys = ['name', 'categories', 'support_email', 'device_types',
                    'payment_type', 'privacy_policy', 'summary']
     # obtaining current data
-    content = json.loads(auth.status(app_id).content)
-    data = {'name': content['name'],
-            'summary': content['summary'],
-            'categories': content['categories'],
-            'support_email': content['support_email'],
-            'device_types': content['device_types'],
-            'payment_type': content['premium_type'],
-            'privacy_policy': content['privacy_policy']}
+    data = json.loads(auth.status(app_id).content)
+    data['payment_type'] = data['premium_type']
+    for k in data.keys():
+        if k not in editable_keys:
+            del data[k]
     sys.stderr.write('Please provide data, hit Enter for no change\n')
     def get_value(k, v):
         variable = raw_input('%s (%s): ' % (k, v))
@@ -122,3 +120,15 @@ def del_screenshot(auth, screenshot_id):
                     response.status_code, response.content)}
     return {'success': True,
             'message': 'Screenshot deleted'}
+
+def get_categories(auth):
+    response = auth.get_categories()
+    if response.status_code != 200:
+        return {'success': False,
+                'message': 'Error, status code: %d, \nMessage: %s' % (
+                    response.status_code, response.content)}
+    message = ''
+    for cat in response.content['objects']:
+        message += '%s: %s\n' % (cat['id'], cat['name'])
+    return {'success': True,
+            'message': message}

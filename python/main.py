@@ -13,12 +13,13 @@ commands = {'validate_manifest': app.commands.validate_manifest,
            'update': app.commands.update,
            'add_screenshot': app.commands.add_screenshot,
            'get_screenshot': app.commands.get_screenshot,
-           'del_screenshot': app.commands.del_screenshot}
+           'del_screenshot': app.commands.del_screenshot,
+           'get_categories': app.commands.get_categories}
 
 parser = argparse.ArgumentParser(description='Command line Marketplace client')
 parser.add_argument('method', type=str, help='command to be run on arguments',
         choices=commands.keys())
-parser.add_argument('attrs', metavar='attr', type=str, nargs='+',
+parser.add_argument('attrs', metavar='attr', type=str, nargs='*',
         help='command arguments')
 args = parser.parse_args()
 
@@ -29,7 +30,10 @@ auth = Marketplace(
         consumer_key=config.CONSUMER_KEY,
         consumer_secret=config.CONSUMER_SECRET)
 
-result = commands[args.method](auth, *args.attrs)
+if args.attrs:
+    result = commands[args.method](auth, *args.attrs)
+else:
+    result = commands[args.method](auth)
 
 if result['success']:
     sys.stdout.write('%s\n' % result['message'])

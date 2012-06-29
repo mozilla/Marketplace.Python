@@ -30,6 +30,7 @@ urls = {'validate': '/apps/validation/',
         'app': '/apps/app/%s/',
         'create_screenshot': '/apps/preview/?app=%s',
         'screenshot': '/apps/preview/%s/',
+        'categories': '/apps/categories/',
 }
 
 def _get_args(consumer):
@@ -113,9 +114,6 @@ class Marketplace:
         """
         body = json.dumps(data)
         headers = self.prepare_request('PUT', url, body, consumer)
-        print url
-        print headers
-        print body
         return requests.put(url, headers=headers, data=body)
 
     def remove(self, url, consumer=None):
@@ -265,3 +263,8 @@ class Marketplace:
             * status_code (int) 204 if successful
         """
         return self.delete(self.url('screenshot') % screenshot_id)
+
+    def get_categories(self):
+        """Get all categories from Marketplae
+        """
+        return self.get(self.url('categories'))
