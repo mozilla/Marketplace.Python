@@ -128,7 +128,8 @@ def get_categories(auth):
                 'message': 'Error, status code: %d, \nMessage: %s' % (
                     response.status_code, response.content)}
     message = ''
-    for cat in response.content['objects']:
+    content = json.loads(response.content)
+    for cat in content['objects']:
         message += '%s: %s\n' % (cat['id'], cat['name'])
     return {'success': True,
             'message': message}

@@ -30,7 +30,7 @@ urls = {'validate': '/apps/validation/',
         'app': '/apps/app/%s/',
         'create_screenshot': '/apps/preview/?app=%s',
         'screenshot': '/apps/preview/%s/',
-        'categories': '/apps/categories/',
+        'categories': '/apps/category/',
 }
 
 def _get_args(consumer):
