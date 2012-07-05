@@ -227,7 +227,8 @@ class Marketplace:
         # XXX: This isn't yet implemented on API
         return self.remove(self.url('app') % app_id)
 
-    def create_screenshot(self, app_id, filename, position=1):
+    def create_screenshot(self, app_id, filename, mimetype='image/jpg',
+            position=1):
         """Add a screenshot to the web app identified by by ``app_id``.
         Screenshots are ordered by ``position``.
 
@@ -240,8 +241,6 @@ class Marketplace:
             s_content = s_file.read()
         s_encoded = b64encode(s_content)
         url = self.url('create_screenshot') % app_id
-        # TODO find the mimetype of the file
-        mimetype = 'image/jpg'
         data = {'position': position,
                 'file': {'type': mimetype,
                          'data': s_encoded}}

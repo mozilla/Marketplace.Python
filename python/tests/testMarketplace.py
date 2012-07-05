@@ -149,6 +149,7 @@ class TestMarketplace(object):
             'categories': ['Business', 'Game'],
             'support_email': 'john@doe.com',
             'device_types': ['phone',],
+            'privacy_policy': 'any',
             'payment_type': 'free'})
         eq_(response.status_code, 202)
         assert not response.content
@@ -200,3 +201,10 @@ class TestMarketplace(object):
         data = json.loads(requests.post.call_args[1]['data'])
         eq_(data['position'], 1)
         eq_(data['file']['data'], b64_file)
+        eq_(data['file']['type'], 'image/jpg')
+        # create a screenshot with a png image and not default position
+        self.marketplace.create_screenshot(123,
+                path('mozilla.jpg'), mimetype='image/png', position=2)
+        data = json.loads(requests.post.call_args[1]['data'])
+        eq_(data['position'], 2)
+        eq_(data['file']['type'], 'image/png')
