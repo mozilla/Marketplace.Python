@@ -67,7 +67,7 @@ class Marketplace:
         """Creates a full URL to the API using urls dict
         """
         return urlunparse((self.protocol, '%s:%s' % (self.domain, self.port),
-                           '%s/en-US/api%s' % (self.prefix, urls[key]),
+                           '%s/api%s' % (self.prefix, urls[key]),
                            '', '', ''))
 
     def set_consumer(self, consumer_key, consumer_secret):
