@@ -10,6 +10,6 @@ CONSUMER_SECRET = (environ['CONSUMER_SECRET']
 MARKETPLACE_PORT = (environ['MARKETPLACE_PORT']
         if 'MARKETPLACE_PORT' in environ else 443)
 MARKETPLACE_DOMAIN = (environ['MARKETPLACE_DOMAIN']
-        if 'MARKETPLACE_DOMAIN' in environ else 'marketplace.allizom.org')
+        if 'MARKETPLACE_DOMAIN' in environ else 'marketplace-dev.allizom.org')
 MARKETPLACE_PROTOCOL = (environ['MARKETPLACE_PROTOCOL']
         if 'MARKETPLACE_PROTOCOL' in environ else 'https')
