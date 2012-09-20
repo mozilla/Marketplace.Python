@@ -9,6 +9,7 @@ import json
 import logging
 import time
 import urllib
+import mimetypes
 
 from base64 import b64encode
 
@@ -240,10 +241,13 @@ class Marketplace:
             s_content = s_file.read()
         s_encoded = b64encode(s_content)
         url = self.url('create_screenshot') % app_id
-        # TODO find the mimetype of the file
-        mimetype = 'image/jpg'
+
+        mtype, encoding = mimetypes.guess_type(filename)
+        if mtype is None:
+            mtype = 'image/jpeg'
+
         data = {'position': position,
-                'file': {'type': mimetype,
+                'file': {'type': mtype,
                          'data': s_encoded}}
         return self.post(url, data)
 
