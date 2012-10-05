@@ -1,6 +1,6 @@
 """
-tests.testMarketplace
----------------------
+tests.testClient
+----------------
 """
 import json
 import logging
@@ -15,14 +15,15 @@ from mock import Mock
 from nose import SkipTest
 from nose.tools import eq_
 
-from ..lib.marketplace import Marketplace
+import marketplace
 
-log = logging.getLogger('marketplace.%s' % __name__)
+log = logging.getLogger('test.%s' % __name__)
 
 # Preparing to mock the requests
 OLD_POST = requests.post
 OLD_PUT = requests.put
 OLD_GET = requests.get
+OLD_DELETE = requests.delete
 
 MARKETPLACE_PORT = 443
 MARKETPLACE_DOMAIN = 'marketplace-dev.allizom.org'
@@ -33,24 +34,21 @@ class Response:
         self.status_code = status_code
         self.content = content
 
-class TestMarketplace(object):
+class TestClient(object):
 
     def setUp(self):
-        consumer_key = (os.environ['CONSUMER_KEY']
-                if 'CONSUMER_KEY' in os.environ else 'consumer_key')
-        consumer_secret = (os.environ['CONSUMER_SECRET']
-                if 'CONSUMER_SECRET' in os.environ else 'consumer_secret')
-        self.marketplace = Marketplace(
+        self.marketplace = marketplace.Client(
                 domain=MARKETPLACE_DOMAIN,
                 port=MARKETPLACE_PORT,
                 protocol=MARKETPLACE_PROTOCOL,
-                consumer_key=consumer_key,
-                consumer_secret=consumer_secret)
+                consumer_key='consumer_key',
+                consumer_secret='consumer_secret')
 
     def tearDown(self):
         requests.post = OLD_POST
         requests.put = OLD_PUT
         requests.get = OLD_GET
+        requests.delete = OLD_DELETE
 
     def test_init(self):
         eq_(self.marketplace.domain, MARKETPLACE_DOMAIN)
@@ -187,8 +185,12 @@ class TestMarketplace(object):
         path = lambda *a: os.path.join(
                             os.path.dirname(os.path.abspath(__file__)), *a)
         resp = {'filetype': 'image/png',
-                'thumbnail_url': 'https://marketplace-dev-cdn.allizom.org/img/uploads/previews/thumbs/71/71761.png?modified=1340899716',
-                'image_url': 'https://marketplace-dev-cdn.allizom.org/img/uploads/previews/full/71/71761.png?modified=1340899716',
+                'thumbnail_url': 'https://marketplace-dev-cdn.allizom.org/img/'
+                                 'uploads/previews/thumbs/71/71761.png?'
+                                 'modified=1340899716',
+                'image_url': 'https://marketplace-dev-cdn.allizom.org/img/'
+                             'uploads/previews/full/71/71761.png?'
+                             'modified=1340899716',
                 'position': 1,
                 'id': 71761,
                 'resource_uri': '/en-US/api/apps/preview/71761'}
@@ -201,10 +203,10 @@ class TestMarketplace(object):
         data = json.loads(requests.post.call_args[1]['data'])
         eq_(data['position'], 1)
         eq_(data['file']['data'], b64_file)
-        eq_(data['file']['type'], 'image/jpg')
-        # create a screenshot with a png image and not default position
+        eq_(data['file']['type'], 'image/jpeg')
+        # create a screenshot with a jpeg image and not default position
         self.marketplace.create_screenshot(123,
-                path('mozilla.jpg'), mimetype='image/png', position=2)
+                path('mozilla.jpg'), mimetype='image/jpeg', position=2)
         data = json.loads(requests.post.call_args[1]['data'])
         eq_(data['position'], 2)
-        eq_(data['file']['type'], 'image/png')
+        eq_(data['file']['type'], 'image/jpeg')

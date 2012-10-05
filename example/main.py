@@ -1,10 +1,10 @@
 import argparse
 import sys
 
-import app.commands
-import app.config as config
+import commands
+import config as config
 
-from lib.marketplace import Marketplace
+import marketplace
 
 commands = {'validate_manifest': app.commands.validate_manifest,
            'is_manifest_valid': app.commands.is_manifest_valid,
@@ -23,7 +23,7 @@ parser.add_argument('attrs', metavar='attr', type=str, nargs='*',
         help='command arguments')
 args = parser.parse_args()
 
-auth = Marketplace(
+client = marketplace.Client(
         domain=config.MARKETPLACE_DOMAIN,
         protocol=config.MARKETPLACE_PROTOCOL,
         port=config.MARKETPLACE_PORT,
@@ -31,9 +31,9 @@ auth = Marketplace(
         consumer_secret=config.CONSUMER_SECRET)
 
 if args.attrs:
-    result = commands[args.method](auth, *args.attrs)
+    result = commands[args.method](client, *args.attrs)
 else:
-    result = commands[args.method](auth)
+    result = commands[args.method](client)
 
 if result['success']:
     sys.stdout.write('%s\n' % result['message'])

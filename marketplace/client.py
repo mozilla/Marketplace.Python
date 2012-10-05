@@ -1,14 +1,11 @@
 """
 A class to interact with Marketplace's api, using OAuth.
-Ripped off from Andy's Flightdeck.utils.amo.py
 
 For full spec please read Marketplace API documentation
 https://github.com/mozilla/zamboni/blob/master/docs/topics/api.rst
 """
 import json
 import logging
-import time
-import urllib
 import mimetypes
 
 from base64 import b64encode
@@ -18,6 +15,8 @@ import oauth2 as oauth
 import requests
 
 from urlparse import urlparse, urlunparse, parse_qsl
+
+from .connection import Connection
 
 log = logging.getLogger('marketplace.%s' % __name__)
 
@@ -34,21 +33,11 @@ urls = {'validate': '/apps/validation/',
         'categories': '/apps/category/',
 }
 
-def _get_args(consumer):
-    """Provide a dict with oauth data
-    """
-    return dict(
-        oauth_consumer_key=consumer.key,
-        oauth_nonce=oauth.generate_nonce(),
-        oauth_signature_method='HMAC-SHA1',
-        oauth_timestamp=int(time.time()),
-        oauth_version='1.0')
 
-class Marketplace:
+class Client:
     """A base class to authenticate and work with Marketplace OAuth.
     """
     signature_method = oauth.SignatureMethod_HMAC_SHA1()
-    should_save_storage = False
 
     def __init__(self, domain=MARKETPLACE_DOMAIN,
                  protocol=MARKETPLACE_PROTOCOL,
@@ -60,9 +49,13 @@ class Marketplace:
         self.port = port
         self.prefix = prefix
         self.three_legged = three_legged
-        self.consumer = None
+        self.conn = None
         if consumer_secret and consumer_key:
-            self.set_consumer(consumer_key, consumer_secret)
+            self.conn = self.get_connection(consumer_key, consumer_secret)
+
+    @staticmethod
+    def get_connection(consumer_key, consumer_secret):
+        return Connection(consumer_key, consumer_secret)
 
     def url(self, key):
         """Creates a full URL to the API using urls dict
@@ -71,58 +64,6 @@ class Marketplace:
                            '%s/api%s' % (self.prefix, urls[key]),
                            '', '', ''))
 
-    def set_consumer(self, consumer_key, consumer_secret):
-        """Sets the consumer attribute
-        """
-        self.consumer = self.get_consumer(consumer_key, consumer_secret)
-
-    def get_consumer(self, consumer_key, consumer_secret):
-        """Get the :class:`oauth.Consumer` instance with prvided key and secret
-        """
-        return oauth.Consumer(consumer_key, consumer_secret)
-
-    def prepare_request(self, method, url, body='', consumer=None):
-        """Adds consumer and signs the request
-
-        :returns: headers of the signed request
-        """
-        if not consumer:
-            consumer = self.consumer
-        req = oauth.Request(method=method, url=url,
-                            parameters=_get_args(consumer))
-        req.sign_request(self.signature_method, consumer, None)
-
-        headers = req.to_header()
-        headers['Content-type'] = 'application/json'
-        return headers
-
-    def get(self, url, data=None, consumer=None):
-        """ Prepare data and send a GET to provided url
-        """
-        body = urllib.urlencode(data) if data else ''
-        headers = self.prepare_request('GET', url, body, consumer)
-        return requests.get(url, headers=headers, data=body)
-
-    def post(self, url, data, consumer=None):
-        """ Prepare data and send a POST to provided url
-        """
-        body = json.dumps(data)
-        headers = self.prepare_request('POST', url, body, consumer)
-        return requests.post(url, headers=headers, data=body)
-
-    def put(self, url, data, consumer=None):
-        """ Prepare data and send a PUT to provided url
-        """
-        body = json.dumps(data)
-        headers = self.prepare_request('PUT', url, body, consumer)
-        return requests.put(url, headers=headers, data=body)
-
-    def remove(self, url, consumer=None):
-        """ Prepare data and send a DELETE to provided url
-        """
-        headers = self.prepare_request('DELETE', url, '', consumer)
-        return requests.delete(url, headers=headers, data='')
-
     def validate_manifest(self, manifest_url):
         """Order manifest validation
 
@@ -130,7 +71,8 @@ class Marketplace:
         """
         # there is a bug request to make this synchronous on Marketplace side
         # this will return the same as :method:`get_manifest_validation_result`
-        return self.post(self.url('validate'), {'manifest': manifest_url})
+        return self.conn.fetch('POST',
+                self.url('validate'), {'manifest': manifest_url})
 
     def get_manifest_validation_result(self, manifest_id):
         """Check if the manifest is processed and if it's valid
@@ -143,7 +85,8 @@ class Marketplace:
                 * valid (Boolean) is manifest valid?
                 * validation - empty string if valid else error dict
         """
-        return self.get(self.url('validation_result') % manifest_id)
+        return self.conn.fetch('GET',
+                self.url('validation_result') % manifest_id)
 
     def is_manifest_valid(self, manifest_id):
         """Check validation shortcut
@@ -174,7 +117,7 @@ class Marketplace:
                 * resource_uri (string) url in marketplace
                 * slug (string) unique name in marketplace
         """
-        return self.post(self.url('create'),
+        return self.conn.fetch('POST', self.url('create'),
                 {'manifest': '%s' % manifest_id})
 
     def update(self, app_id, data):
@@ -211,7 +154,7 @@ class Marketplace:
             and data['payment_type']
             and 'privacy_policy' in data
             and data['privacy_policy'])
-        return self.put(self.url('app') % app_id, data)
+        return self.conn.fetch('PUT', self.url('app') % app_id, data)
 
     def status(self, app_id):
         """View details of an app identified by its id
@@ -220,13 +163,13 @@ class Marketplace:
             * status_code (int) 200 if successful
             * content (JSON String) with all available app information
         """
-        return self.get(self.url('app') % app_id)
+        return self.conn.fetch('GET', self.url('app') % app_id)
 
     def delete(self, app_id):
         """Delete an app from Marketplace
         """
         # XXX: This isn't yet implemented on API
-        return self.remove(self.url('app') % app_id)
+        return self.conn.fetch('DELETE', self.url('app') % app_id)
 
     def create_screenshot(self, app_id, filename, mimetype='image/jpg',
             position=1):
@@ -250,7 +193,7 @@ class Marketplace:
         data = {'position': position,
                 'file': {'type': mtype,
                          'data': s_encoded}}
-        return self.post(url, data)
+        return self.conn.fetch('POST', url, data)
 
     def get_screenshot(self, screenshot_id):
         """Get information about screenshot or video
@@ -259,7 +202,7 @@ class Marketplace:
             * status_code (int) 200 is successful
             * content (JSON string)
         """
-        return self.get(self.url('screenshot') % screenshot_id)
+        return self.conn.get(self.url('screenshot') % screenshot_id)
 
     def del_screenshot(self, screenshot_id):
         """Deletes screenshot
@@ -267,9 +210,9 @@ class Marketplace:
         :returns: HttpResponse:
             * status_code (int) 204 if successful
         """
-        return self.delete(self.url('screenshot') % screenshot_id)
+        return self.conn.delete(self.url('screenshot') % screenshot_id)
 
     def get_categories(self):
         """Get all categories from Marketplae
         """
-        return self.get(self.url('categories'))
+        return self.conn.fetch('GET', self.url('categories'))
