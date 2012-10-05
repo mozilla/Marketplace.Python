@@ -6,15 +6,15 @@ import config as config
 
 import marketplace
 
-commands = {'validate_manifest': app.commands.validate_manifest,
-           'is_manifest_valid': app.commands.is_manifest_valid,
-           'create': app.commands.create,
-           'status': app.commands.status,
-           'update': app.commands.update,
-           'add_screenshot': app.commands.add_screenshot,
-           'get_screenshot': app.commands.get_screenshot,
-           'del_screenshot': app.commands.del_screenshot,
-           'get_categories': app.commands.get_categories}
+commands = {'validate_manifest': commands.validate_manifest,
+           'is_manifest_valid': commands.is_manifest_valid,
+           'create': commands.create,
+           'status': commands.status,
+           'update': commands.update,
+           'add_screenshot': commands.add_screenshot,
+           'get_screenshot': commands.get_screenshot,
+           'del_screenshot': commands.del_screenshot,
+           'get_categories': commands.get_categories}
 
 parser = argparse.ArgumentParser(description='Command line Marketplace client')
 parser.add_argument('method', type=str, help='command to be run on arguments',
