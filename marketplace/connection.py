@@ -34,6 +34,7 @@ class Connection:
     Marketplace API
     """
     signature_method = oauth.SignatureMethod_HMAC_SHA1()
+    consumer = None
 
     def __init__(self, consumer_key, consumer_secret):
         self.set_consumer(consumer_key, consumer_secret)
@@ -63,7 +64,7 @@ class Connection:
 
     @staticmethod
     def _get_error_reason(response):
-        """extract error reason from the response. It might be either
+        """Extract error reason from the response. It might be either
         the 'reason' or the entire response
         """
         body = response.json
@@ -72,6 +73,9 @@ class Connection:
         return response.content
 
     def fetch(self, method, url, data=None, expected_status_code=None):
+        """Prepare the headers, encode data, call API and provide
+        data it returns
+        """
         kwargs = self.prepare_request(method, url, data)
         response = getattr(requests, method.lower())(url, **kwargs)
         if response.status_code >= 400:
@@ -82,4 +86,6 @@ class Connection:
         return response
 
     def fetch_json(self, method, url, data=None, expected_status_code=None):
+        """Return json decoded data from fetch
+        """
         return self.fetch(method, url, data, expected_status_code).json()
