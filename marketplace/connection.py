@@ -1,3 +1,6 @@
+""" Provide connection with Marketplace API
+
+"""
 import json
 import logging
 import time
@@ -8,8 +11,12 @@ import requests
 
 log = logging.getLogger('marketplace.%s' % __name__)
 
+
 class NotExpectedStatusCode(requests.exceptions.HTTPError):
+    """ Raise if status code returned from API is not the expected one
+    """
     pass
+
 
 def _get_args(consumer):
     """Provide a dict with oauth data
@@ -21,7 +28,11 @@ def _get_args(consumer):
         oauth_timestamp=int(time.time()),
         oauth_version='1.0')
 
+
 class Connection:
+    """ Keeps the consumer class and provides the way to connect to the
+    Marketplace API
+    """
     signature_method = oauth.SignatureMethod_HMAC_SHA1()
 
     def __init__(self, consumer_key, consumer_secret):
@@ -30,25 +41,16 @@ class Connection:
     def set_consumer(self, consumer_key, consumer_secret):
         """Sets the consumer attribute
         """
-        self.consumer = self.get_consumer(consumer_key, consumer_secret)
+        self.consumer = oauth.Consumer(consumer_key, consumer_secret)
 
-    def get_consumer(self, consumer_key, consumer_secret):
-        """Get the :class:`oauth.Consumer` instance with provided key and
-        secret
-        """
-        return oauth.Consumer(consumer_key, consumer_secret)
-
-
-    def prepare_request(self, method, url, body='', consumer=None):
+    def prepare_request(self, method, url, body=''):
         """Adds consumer and signs the request
 
         :returns: headers of the signed request
         """
-        if not consumer:
-            consumer = self.consumer
         req = oauth.Request(method=method, url=url,
-                            parameters=_get_args(consumer))
-        req.sign_request(self.signature_method, consumer, None)
+                            parameters=_get_args(self.consumer))
+        req.sign_request(self.signature_method, self.consumer, None)
 
         headers = req.to_header()
         headers['Content-type'] = 'application/json'
@@ -61,22 +63,23 @@ class Connection:
 
     @staticmethod
     def _get_error_reason(response):
+        """extract error reason from the response. It might be either
+        the 'reason' or the entire response
+        """
         body = response.json
         if body and 'reason' in body:
             return body['reason']
         return response.content
 
-    def fetch(self, method, url, data=None, expected_status_code=None,
-            consumer=None):
-        kwargs = self.prepare_request(method, url, data, consumer)
+    def fetch(self, method, url, data=None, expected_status_code=None):
+        kwargs = self.prepare_request(method, url, data)
         response = getattr(requests, method.lower())(url, **kwargs)
         if response.status_code >= 400:
             response.raise_for_status()
-        if expected_status_code and response.status_code != expected_status_code:
-                raise NotExpectedStatusCode(self._get_error_reason(response))
+        if (expected_status_code
+                and response.status_code != expected_status_code):
+            raise NotExpectedStatusCode(self._get_error_reason(response))
         return response
 
-    def fetch_json(self, method, url, data=None, expected_status_code=None,
-            consumer=None):
-        return self.fetch(method, url, data, consumer,
-            expected_status_code).json()
+    def fetch_json(self, method, url, data=None, expected_status_code=None):
+        return self.fetch(method, url, data, expected_status_code).json()
