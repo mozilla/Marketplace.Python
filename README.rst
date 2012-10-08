@@ -11,6 +11,14 @@ with Marketplace.
 You may find and collaborate your time and experience at 
 https://github.com/mozilla/Marketplace.Python
 
+Testing
+#######
+
+Install test environment::
+
+    pip install mock
+    pip install nose
+
 Test::
 
     nosetests
