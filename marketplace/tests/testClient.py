@@ -211,7 +211,7 @@ class TestClient(unittest.TestCase):
         eq_(data['file']['type'], 'image/jpeg')
         # create a screenshot with a jpeg image and not default position
         self.marketplace.create_screenshot(123,
-                path('mozilla.jpg'), mimetype='image/jpeg', position=2)
+                path('mozilla.jpg'), position=2)
         data = json.loads(requests.post.call_args[1]['data'])
         eq_(data['position'], 2)
         eq_(data['file']['type'], 'image/jpeg')

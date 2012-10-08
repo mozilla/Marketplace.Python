@@ -54,6 +54,8 @@ class Client:
 
     @staticmethod
     def get_connection(consumer_key, consumer_secret):
+        """Provide Connection object used for communication with the API
+        """
         return Connection(consumer_key, consumer_secret)
 
     def url(self, key):
@@ -171,8 +173,7 @@ class Client:
         # return self.conn.fetch('DELETE', self.url('app') % app_id)
         raise NotImplementedError()
 
-    def create_screenshot(self, app_id, filename, mimetype='image/jpg',
-            position=1):
+    def create_screenshot(self, app_id, filename, position=1):
         """Add a screenshot to the web app identified by by ``app_id``.
         Screenshots are ordered by ``position``.
 
