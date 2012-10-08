@@ -24,7 +24,7 @@ MARKETPLACE_PORT = 443
 MARKETPLACE_DOMAIN = 'marketplace.mozilla.org'
 MARKETPLACE_PROTOCOL = 'https'
 
-urls = {'validate': '/apps/validation/',
+URLS = {'validate': '/apps/validation/',
         'validation_result': '/apps/validation/%s/',
         'create': '/apps/app/',
         'app': '/apps/app/%s/',
@@ -42,13 +42,12 @@ class Client:
     def __init__(self, domain=MARKETPLACE_DOMAIN,
                  protocol=MARKETPLACE_PROTOCOL,
                  port=MARKETPLACE_PORT,
-                 prefix='', three_legged=False,
+                 prefix='',
                  consumer_key=None, consumer_secret=None):
         self.domain = domain
         self.protocol = protocol
         self.port = port
         self.prefix = prefix
-        self.three_legged = three_legged
         self.conn = None
         if consumer_secret and consumer_key:
             self.conn = self.get_connection(consumer_key, consumer_secret)
@@ -61,7 +60,7 @@ class Client:
         """Creates a full URL to the API using urls dict
         """
         return urlunparse((self.protocol, '%s:%s' % (self.domain, self.port),
-                           '%s/api%s' % (self.prefix, urls[key]),
+                           '%s/api%s' % (self.prefix, URLS[key]),
                            '', '', ''))
 
     def validate_manifest(self, manifest_url):
