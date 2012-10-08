@@ -28,8 +28,7 @@ URLS = {'validate': '/apps/validation/',
         'app': '/apps/app/%s/',
         'create_screenshot': '/apps/preview/?app=%s',
         'screenshot': '/apps/preview/%s/',
-        'categories': '/apps/category/',
-}
+        'categories': '/apps/category/'}
 
 
 class Client:
