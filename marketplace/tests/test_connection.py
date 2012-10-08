@@ -1,7 +1,3 @@
-"""
-tests.testClient
-----------------
-"""
 import json
 import logging
 import unittest
@@ -29,6 +25,7 @@ class Response(requests.Response):
         self.status_code = status_code
         self._content = content
 
+
 class TestClient(unittest.TestCase):
 
     def setUp(self):
@@ -44,30 +41,30 @@ class TestClient(unittest.TestCase):
         resp = {"reason": "Error with OAuth headers"}
         requests.post = Mock(return_value=Response(401, json.dumps(resp)))
         self.assertRaises(requests.exceptions.HTTPError, self.conn.fetch,
-                'POST', 'http://example.com/', {})
+                          'POST', 'http://example.com/', {})
 
         resp = "<html><title>404</title><body><p>Error 404</p></body></html>"
         requests.post = Mock(return_value=Response(404, resp))
         self.assertRaises(requests.exceptions.HTTPError, self.conn.fetch,
-                'POST', 'http://example.com/', {})
+                          'POST', 'http://example.com/', {})
 
     def test_raising_on_unexpected(self):
         resp = {"reason": "Error with OAuth headers"}
         requests.post = Mock(return_value=Response(204, json.dumps(resp)))
         self.assertRaises(requests.exceptions.HTTPError, self.conn.fetch,
-                'POST', 'http://example.com/', {}, 201)
+                          'POST', 'http://example.com/', {}, 201)
 
     def test_error_reason_json(self):
         resp = {"reason": "message"}
         self.assertEquals(
-                Connection._get_error_reason(Response(204,
-                    json.dumps(resp))), resp['reason'])
+            Connection._get_error_reason(Response(204, json.dumps(resp))),
+            resp['reason'])
 
     def test_error_reason_text(self):
         resp = "<html><title>404</title><body><p>Error 404</p></body></html>"
         self.assertEquals(
-                Connection._get_error_reason(Response(204, resp)),
-                resp)
+            Connection._get_error_reason(Response(204, resp)),
+            resp)
 
     def test_set_consumer(self):
         assert isinstance(self.conn.consumer, oauth.Consumer)

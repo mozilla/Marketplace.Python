@@ -1,7 +1,3 @@
-"""
-tests.testClient
-----------------
-"""
 import json
 import logging
 import os
@@ -29,6 +25,7 @@ MARKETPLACE_PORT = 443
 MARKETPLACE_DOMAIN = 'marketplace-dev.allizom.org'
 MARKETPLACE_PROTOCOL = 'https'
 
+
 class Response:
     """This is used to create a mock of response from API
     """
@@ -36,15 +33,16 @@ class Response:
         self.status_code = status_code
         self.content = content
 
+
 class TestClient(unittest.TestCase):
 
     def setUp(self):
         self.marketplace = marketplace.Client(
-                domain=MARKETPLACE_DOMAIN,
-                port=MARKETPLACE_PORT,
-                protocol=MARKETPLACE_PROTOCOL,
-                consumer_key='consumer_key',
-                consumer_secret='consumer_secret')
+            domain=MARKETPLACE_DOMAIN,
+            port=MARKETPLACE_PORT,
+            protocol=MARKETPLACE_PROTOCOL,
+            consumer_key='consumer_key',
+            consumer_secret='consumer_secret')
 
     def tearDown(self):
         requests.post = OLD_POST
@@ -148,7 +146,7 @@ class TestClient(unittest.TestCase):
             'summary': 'Changed Summary',
             'categories': ['Business', 'Game'],
             'support_email': 'john@doe.com',
-            'device_types': ['phone',],
+            'device_types': ['phone', ],
             'privacy_policy': 'any',
             'payment_type': 'free'})
         eq_(response.status_code, 202)
@@ -157,7 +155,7 @@ class TestClient(unittest.TestCase):
     def test_status(self):
         resp = {'categories': ['Business', 'Game'],
                 'description': None,
-                'device_types': ['phone',],
+                'device_types': ['phone', ],
                 'homepage': None,
                 'id': 1,
                 'manifest': '0a650e5e4c434b5cb60c5495c0d88a89',
@@ -189,7 +187,7 @@ class TestClient(unittest.TestCase):
 
     def test_add_screenshot(self):
         path = lambda *a: os.path.join(
-                            os.path.dirname(os.path.abspath(__file__)), *a)
+            os.path.dirname(os.path.abspath(__file__)), *a)
         resp = {'filetype': 'image/png',
                 'thumbnail_url': 'https://marketplace-dev-cdn.allizom.org/img/'
                                  'uploads/previews/thumbs/71/71761.png?'
@@ -212,7 +210,7 @@ class TestClient(unittest.TestCase):
         eq_(data['file']['type'], 'image/jpeg')
         # create a screenshot with a jpeg image and not default position
         self.marketplace.create_screenshot(123,
-                path('mozilla.jpg'), position=2)
+                                           path('mozilla.jpg'), position=2)
         data = json.loads(requests.post.call_args[1]['data'])
         eq_(data['position'], 2)
         eq_(data['file']['type'], 'image/jpeg')
