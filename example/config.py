@@ -1,5 +1,5 @@
-import oauth2 as oauth
-
+"""Read config from environment variables
+"""
 from os import environ
 
 CONSUMER_KEY = (environ['CONSUMER_KEY']

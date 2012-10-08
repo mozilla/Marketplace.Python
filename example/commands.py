@@ -1,13 +1,7 @@
-import time
-import requests
+"""Commands to run on the Marketplace API
+"""
 import sys
-
 import json
-import oauth2 as oauth
-
-import config
-
-from lib.marketplace import Marketplace
 
 
 def validate_manifest(auth, manifest_url):
@@ -64,24 +58,24 @@ def update(auth, app_id):
     # obtaining current data
     data = json.loads(auth.status(app_id).content)
     data['payment_type'] = data['premium_type']
-    for k in data.keys():
-        if k not in editable_keys:
-            del data[k]
+    for key in data.keys():
+        if key not in editable_keys:
+            del data[key]
     sys.stderr.write('Please provide data, hit Enter for no change\n')
-    def get_value(k, v):
-        variable = raw_input('%s (%s): ' % (k, v))
-        if k in truthy_keys and not variable and not v:
+    def get_value(key, val):
+        variable = raw_input('%s (%s): ' % (key, val))
+        if key in truthy_keys and not variable and not val:
             sys.stdout.write('This parameter is required.\n')
-            variable = get_value(k, v)
+            variable = get_value(key, val)
         return variable
-    for k, v in data.items():
-        if k in editable_keys:
-            variable = get_value(k, v)
+    for key, val in data.items():
+        if key in editable_keys:
+            variable = get_value(key, val)
             if variable != '':
-                if isinstance(v, list):
-                    data[k] = variable.split(',')
+                if isinstance(val, list):
+                    data[key] = variable.split(',')
                 else:
-                    data[k] = variable
+                    data[key] = variable
     response = auth.update(app_id, data)
     if response.status_code != 202:
         return {'success': False,
