@@ -10,11 +10,9 @@ import mimetypes
 
 from base64 import b64encode
 
-import httplib2
 import oauth2 as oauth
-import requests
 
-from urlparse import urlparse, urlunparse, parse_qsl
+from urlparse import urlunparse
 
 from .connection import Connection
 
@@ -203,7 +201,7 @@ class Client:
             * status_code (int) 200 is successful
             * content (JSON string)
         """
-        return self.conn.get(self.url('screenshot') % screenshot_id)
+        return self.conn.fetch('GET', self.url('screenshot') % screenshot_id)
 
     def del_screenshot(self, screenshot_id):
         """Deletes screenshot
@@ -211,7 +209,8 @@ class Client:
         :returns: HttpResponse:
             * status_code (int) 204 if successful
         """
-        return self.conn.delete(self.url('screenshot') % screenshot_id)
+        return self.conn.fetch('DELETE',
+                self.url('screenshot') % screenshot_id)
 
     def get_categories(self):
         """Get all categories from Marketplae
