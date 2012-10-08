@@ -4,6 +4,7 @@ A class to interact with Marketplace's api, using OAuth.
 For full spec please read Marketplace API documentation
 https://github.com/mozilla/zamboni/blob/master/docs/topics/api.rst
 """
+
 import json
 import logging
 import mimetypes
@@ -70,7 +71,7 @@ class Client:
         # there is a bug request to make this synchronous on Marketplace side
         # this will return the same as :method:`get_manifest_validation_result`
         return self.conn.fetch('POST',
-                self.url('validate'), {'manifest': manifest_url})
+                               self.url('validate'), {'manifest': manifest_url})
 
     def get_manifest_validation_result(self, manifest_id):
         """Check if the manifest is processed and if it's valid
@@ -84,7 +85,7 @@ class Client:
                 * validation - empty string if valid else error dict
         """
         return self.conn.fetch('GET',
-                self.url('validation_result') % manifest_id)
+                               self.url('validation_result') % manifest_id)
 
     def is_manifest_valid(self, manifest_id):
         """Check validation shortcut
@@ -116,7 +117,7 @@ class Client:
                 * slug (string) unique name in marketplace
         """
         return self.conn.fetch('POST', self.url('create'),
-                {'manifest': '%s' % manifest_id})
+                               {'manifest': '%s' % manifest_id})
 
     def update(self, app_id, data):
         """Update app identified by app_id with data
@@ -140,18 +141,18 @@ class Client:
             * content (dict) or empty if successful
         """
         assert ('name' in data
-            and data['name']
-            and 'summary' in data
-            and 'categories' in data
-            and data['categories']
-            and 'support_email' in data
-            and data['support_email']
-            and 'device_types' in data
-            and data['device_types']
-            and 'payment_type' in data
-            and data['payment_type']
-            and 'privacy_policy' in data
-            and data['privacy_policy'])
+                and data['name']
+                and 'summary' in data
+                and 'categories' in data
+                and data['categories']
+                and 'support_email' in data
+                and data['support_email']
+                and 'device_types' in data
+                and data['device_types']
+                and 'payment_type' in data
+                and data['payment_type']
+                and 'privacy_policy' in data
+                and data['privacy_policy'])
         return self.conn.fetch('PUT', self.url('app') % app_id, data)
 
     def status(self, app_id):
@@ -209,7 +210,7 @@ class Client:
             * status_code (int) 204 if successful
         """
         return self.conn.fetch('DELETE',
-                self.url('screenshot') % screenshot_id)
+                               self.url('screenshot') % screenshot_id)
 
     def get_categories(self):
         """Get all categories from Marketplae

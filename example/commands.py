@@ -1,5 +1,6 @@
 """Commands to run on the Marketplace API
 """
+
 import sys
 import json
 
@@ -14,6 +15,7 @@ def validate_manifest(auth, manifest_url):
             'message': 'FAILED to issue validation. '
                        'Status code: %d' % response.status_code}
 
+
 def is_manifest_valid(auth, manifest_id):
     response = auth.is_manifest_valid(manifest_id)
     if response is None:
@@ -25,6 +27,7 @@ def is_manifest_valid(auth, manifest_id):
                            'You can now add your app to the marketplace'}
     return {'success': True,
             'message': 'Your manifest is not valid:\n%s' % response}
+
 
 def create(auth, manifest_id):
     response = auth.create(manifest_id)
@@ -38,6 +41,7 @@ def create(auth, manifest_id):
         return {'success': False,
                 'message': response.content}
 
+
 def status(auth, app_id):
     response = auth.status(app_id)
     if response.status_code != 200:
@@ -49,7 +53,16 @@ def status(auth, app_id):
             'message': '\n'.join(
                 ['%s: %s' % (k, v) for k, v in content.items()])}
 
+
 def update(auth, app_id):
+
+    def get_value(key, val):
+        variable = raw_input('%s (%s): ' % (key, val))
+        if key in truthy_keys and not variable and not val:
+            sys.stdout.write('This parameter is required.\n')
+            variable = get_value(key, val)
+        return variable
+
     editable_keys = ['name', 'device_types', 'summary', 'support_email',
                      'homepage', 'categories', 'description', 'privacy_policy',
                      'support_url', 'payment_type']
@@ -62,12 +75,7 @@ def update(auth, app_id):
         if key not in editable_keys:
             del data[key]
     sys.stderr.write('Please provide data, hit Enter for no change\n')
-    def get_value(key, val):
-        variable = raw_input('%s (%s): ' % (key, val))
-        if key in truthy_keys and not variable and not val:
-            sys.stdout.write('This parameter is required.\n')
-            variable = get_value(key, val)
-        return variable
+
     for key, val in data.items():
         if key in editable_keys:
             variable = get_value(key, val)
@@ -84,6 +92,7 @@ def update(auth, app_id):
     return {'success': True,
             'message': 'Your app has been updated'}
 
+
 def add_screenshot(auth, app_id, filename):
     response = auth.create_screenshot(app_id, filename)
     if response.status_code != 201:
@@ -94,6 +103,7 @@ def add_screenshot(auth, app_id, filename):
     return {'success': True,
             'message': '\n'.join(
                 ['%s: %s' % (k, v) for k, v in content.items()])}
+
 
 def get_screenshot(auth, screenshot_id):
     response = auth.get_screenshot(screenshot_id)
@@ -106,6 +116,7 @@ def get_screenshot(auth, screenshot_id):
             'message': '\n'.join(
                 ['%s: %s' % (k, v) for k, v in content.items()])}
 
+
 def del_screenshot(auth, screenshot_id):
     response = auth.del_screenshot(screenshot_id)
     if response.status_code != 204:
@@ -114,6 +125,7 @@ def del_screenshot(auth, screenshot_id):
                     response.status_code, response.content)}
     return {'success': True,
             'message': 'Screenshot deleted'}
+
 
 def get_categories(auth):
     response = auth.get_categories()
