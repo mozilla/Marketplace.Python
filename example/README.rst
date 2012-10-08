@@ -13,6 +13,10 @@ Usage
     export CONSUMER_KEY=yourconsumerkey
     export CONSUMER_SECRET=yourconsumersecret
 
+* Change domain if you wish to work on development server::
+
+    export MARKETPLACE_DOMAIN=marketplace-dev.allizom.org
+
 * Validate manifest. Will return ``manifest_id`` which is needed for the next steps::
 
     python main.py validate_manifest http://mozilla.github.com/MarketplaceClientExample/manifest.webapp
