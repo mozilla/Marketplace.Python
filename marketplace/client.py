@@ -169,7 +169,8 @@ class Client:
         """Delete an app from Marketplace
         """
         # XXX: This isn't yet implemented on API
-        return self.conn.fetch('DELETE', self.url('app') % app_id)
+        # return self.conn.fetch('DELETE', self.url('app') % app_id)
+        raise NotImplementedError()
 
     def create_screenshot(self, app_id, filename, mimetype='image/jpg',
             position=1):
