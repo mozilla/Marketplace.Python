@@ -35,7 +35,7 @@ def create(auth, manifest_id):
     if response.status_code == 201:
         return {'success': True,
                 'message': ('Your app has been added to marketplace!\n'
-                            'id: %d, slug: %s') % (content['id'],
+                            'id: %s, slug: %s') % (content['id'],
                                                    content['slug'])}
     else:
         return {'success': False,
