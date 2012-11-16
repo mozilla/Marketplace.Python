@@ -42,6 +42,14 @@ def create(auth, manifest_id):
                 'message': response.content}
 
 
+def list_webapps(auth):
+    response = auth.list_webapps()
+    content = json.loads(response.content)
+    if response.status_code == 200:
+        return {'success': True,
+                'message': content}
+
+
 def status(auth, app_id):
     response = auth.status(app_id)
     if response.status_code != 200:
