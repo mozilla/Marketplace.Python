@@ -125,7 +125,7 @@ class Client:
         :returns: list
         """
         response = self.conn.fetch('GET', self.url('create'))
-        print response
+        return response
 
     def update(self, app_id, data):
         """Update app identified by app_id with data

@@ -5,8 +5,8 @@ import sys
 import json
 
 
-def validate_manifest(auth, manifest_url):
-    response = auth.validate_manifest(manifest_url)
+def validate_manifest(client, manifest_url):
+    response = client.validate_manifest(manifest_url)
     if response.status_code == 201:
         return {'success': True,
                 'message': 'Validation issued, '
@@ -16,8 +16,8 @@ def validate_manifest(auth, manifest_url):
                        'Status code: %d' % response.status_code}
 
 
-def is_manifest_valid(auth, manifest_id):
-    response = auth.is_manifest_valid(manifest_id)
+def is_manifest_valid(client, manifest_id):
+    response = client.is_manifest_valid(manifest_id)
     if response is None:
         return {'success': True,
                 'message': "Your manifest hasn't been processed yet"}
@@ -29,8 +29,8 @@ def is_manifest_valid(auth, manifest_id):
             'message': 'Your manifest is not valid:\n%s' % response}
 
 
-def create(auth, manifest_id):
-    response = auth.create(manifest_id)
+def create(client, manifest_id):
+    response = client.create(manifest_id)
     content = json.loads(response.content)
     if response.status_code == 201:
         return {'success': True,
@@ -42,16 +42,19 @@ def create(auth, manifest_id):
                 'message': response.content}
 
 
-def list_webapps(auth):
-    response = auth.list_webapps()
+def list_webapps(client):
+    response = client.list_webapps()
     content = json.loads(response.content)
     if response.status_code == 200:
         return {'success': True,
                 'message': content}
+    else:
+        return {'success': False,
+                'message': response.content}
 
 
-def status(auth, app_id):
-    response = auth.status(app_id)
+def status(client, app_id):
+    response = client.status(app_id)
     if response.status_code != 200:
         return {'success': False,
                 'message': 'Error, status code: %d, \nMessage: %s' % (
@@ -62,7 +65,7 @@ def status(auth, app_id):
                 ['%s: %s' % (k, v) for k, v in content.items()])}
 
 
-def update(auth, app_id):
+def update(client, app_id):
 
     def get_value(key, val):
         variable = raw_input('%s (%s): ' % (key, val))
@@ -77,7 +80,7 @@ def update(auth, app_id):
     truthy_keys = ['name', 'categories', 'support_email', 'device_types',
                    'payment_type', 'privacy_policy', 'summary']
     # obtaining current data
-    data = json.loads(auth.status(app_id).content)
+    data = json.loads(client.status(app_id).content)
     data['payment_type'] = data['premium_type']
     for key in data.keys():
         if key not in editable_keys:
@@ -92,7 +95,7 @@ def update(auth, app_id):
                     data[key] = variable.split(',')
                 else:
                     data[key] = variable
-    response = auth.update(app_id, data)
+    response = client.update(app_id, data)
     if response.status_code != 202:
         return {'success': False,
                 'message': 'Error, status code: %d, \nMessage: %s' % (
@@ -101,8 +104,8 @@ def update(auth, app_id):
             'message': 'Your app has been updated'}
 
 
-def add_screenshot(auth, app_id, filename):
-    response = auth.create_screenshot(app_id, filename)
+def add_screenshot(client, app_id, filename):
+    response = client.create_screenshot(app_id, filename)
     if response.status_code != 201:
         return {'success': False,
                 'message': 'Error, status code: %d, \nMessage: %s' % (
@@ -113,8 +116,8 @@ def add_screenshot(auth, app_id, filename):
                 ['%s: %s' % (k, v) for k, v in content.items()])}
 
 
-def get_screenshot(auth, screenshot_id):
-    response = auth.get_screenshot(screenshot_id)
+def get_screenshot(client, screenshot_id):
+    response = client.get_screenshot(screenshot_id)
     if response.status_code != 200:
         return {'success': False,
                 'message': 'Error, status code: %d, \nMessage: %s' % (
@@ -125,8 +128,8 @@ def get_screenshot(auth, screenshot_id):
                 ['%s: %s' % (k, v) for k, v in content.items()])}
 
 
-def del_screenshot(auth, screenshot_id):
-    response = auth.del_screenshot(screenshot_id)
+def del_screenshot(client, screenshot_id):
+    response = client.del_screenshot(screenshot_id)
     if response.status_code != 204:
         return {'success': False,
                 'message': 'Error, status code: %d, \nMessage: %s' % (
@@ -135,8 +138,8 @@ def del_screenshot(auth, screenshot_id):
             'message': 'Screenshot deleted'}
 
 
-def get_categories(auth):
-    response = auth.get_categories()
+def get_categories(client):
+    response = client.get_categories()
     if response.status_code != 200:
         return {'success': False,
                 'message': 'Error, status code: %d, \nMessage: %s' % (
