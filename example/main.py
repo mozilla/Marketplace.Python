@@ -9,6 +9,7 @@ import marketplace
 COMMANDS = {'validate_manifest': commands.validate_manifest,
            'is_manifest_valid': commands.is_manifest_valid,
            'create': commands.create,
+           'list_webapps': commands.list_webapps,
            'status': commands.status,
            'update': commands.update,
            'add_screenshot': commands.add_screenshot,

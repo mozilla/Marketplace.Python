@@ -119,6 +119,14 @@ class Client:
         return self.conn.fetch('POST', self.url('create'),
                                {'manifest': '%s' % manifest_id})
 
+    def list_webapps(self):
+        """Lists all webapps owned by user
+
+        :returns: list
+        """
+        response = self.conn.fetch('GET', self.url('create'))
+        return response
+
     def update(self, app_id, data):
         """Update app identified by app_id with data
 
