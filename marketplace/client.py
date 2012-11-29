@@ -71,7 +71,8 @@ class Client:
         # there is a bug request to make this synchronous on Marketplace side
         # this will return the same as :method:`get_manifest_validation_result`
         return self.conn.fetch('POST',
-                               self.url('validate'), {'manifest': manifest_url})
+                               self.url('validate'),
+                               {'manifest': manifest_url})
 
     def get_manifest_validation_result(self, manifest_id):
         """Check if the manifest is processed and if it's valid
