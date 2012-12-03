@@ -150,3 +150,14 @@ def get_categories(client):
         message += '%s: %s\n' % (cat['id'], cat['name'])
     return {'success': True,
             'message': message}
+
+def app_state(client, app_id, status=None, disabled_by_user=None):
+    response = client.app_state(app_id, status, disabled_by_user)
+    if response.status_code != 202:
+        return {'success': False,
+                'message': 'Error, status code: %d, \nMessage: %s' % (
+                    response.status_code, response.content)}
+    content = json.loads(response.content)
+    return {'success': True,
+            'message': '\n'.join(
+                ['%s: %s' % (k, v) for k, v in content.items()])}
