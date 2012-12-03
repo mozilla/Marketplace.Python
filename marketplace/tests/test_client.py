@@ -214,3 +214,11 @@ class TestClient(unittest.TestCase):
         data = json.loads(requests.post.call_args[1]['data'])
         eq_(data['position'], 2)
         eq_(data['file']['type'], 'image/jpeg')
+
+    def test_enable(self):
+        resp = {"status": "pending",
+                "disabled_by_user":True}
+        requests.patch = Mock(return_value=Response(202, json.dumps(resp)))
+
+        response = self.marketplace.app_state(123, status='pending', disabled_by_user='True')
+        eq_(response.status_code,202)

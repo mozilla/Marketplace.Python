@@ -15,7 +15,8 @@ COMMANDS = {'validate_manifest': commands.validate_manifest,
            'add_screenshot': commands.add_screenshot,
            'get_screenshot': commands.get_screenshot,
            'del_screenshot': commands.del_screenshot,
-           'get_categories': commands.get_categories}
+           'get_categories': commands.get_categories,
+           'app_state': commands.app_state}
 
 def main():
     parser = argparse.ArgumentParser(
