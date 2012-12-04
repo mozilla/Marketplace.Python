@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='Marketplace',
-    version='0.1.4a',
+    version='0.1.5a',
     packages=['marketplace', ],
     license='Mozilla Public License (MPL 2.0)',
     author='Piotr Zalewa',
