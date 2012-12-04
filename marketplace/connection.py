@@ -78,6 +78,7 @@ class Connection:
         """
         kwargs = self.prepare_request(method, url, data)
         response = getattr(requests, method.lower())(url, **kwargs)
+        log.debug(str(response.__dict__))
         if response.status_code >= 400:
             response.raise_for_status()
         if (expected_status_code
