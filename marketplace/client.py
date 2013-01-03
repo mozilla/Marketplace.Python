@@ -228,9 +228,9 @@ class Client:
         return self.conn.fetch('GET', self.url('categories'))
 
     def app_state(self, app_id, status=None, disabled_by_user=None):
-        """Once all the data has been completed and at least one screenshot created,
-        you can push the app to the review queue
-        status (optional): key statuses are
+        """Once all the data has been completed and at least one screenshot
+        created, you can push the app to the review queue status (optional):
+        key statuses are
 
             incomplete: incomplete
             pending: pending
@@ -241,11 +241,16 @@ class Client:
 
         Valid transitions that users can initiate are:
 
-            waiting to be public to public: occurs when the app has been reviewed, but not yet been made public.
+            waiting to be public to public: occurs when the app has been
+                reviewed, but not yet been made public.
 
-            incomplete to pending: call this once your app has been completed and it will be added to the Marketplace review queue.
-                This can only be called if all the required data is there. If not, you'll get an error containing the reason
-            disabled_by_user: by changing this value from True to False you can enable or disable an app
+            incomplete to pending: call this once your app has been completed
+                and it will be added to the Marketplace review queue.
+                This can only be called if all the required data is there.
+                If not, you'll get an error containing the reason
+
+            disabled_by_user: by changing this value from True to False you
+                can enable or disable an app
         """
         assert status is not None or disabled_by_user is not None
         data = {}
@@ -254,5 +259,4 @@ class Client:
         if disabled_by_user:
             data['disabled_by_user'] = disabled_by_user
 
-        return self.conn.fetch('PATCH',
-                self.url('enable') % app_id, data)
+        return self.conn.fetch('PATCH', self.url('enable') % app_id, data)
