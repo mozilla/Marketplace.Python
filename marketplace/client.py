@@ -61,7 +61,7 @@ class Client:
         """Creates a full URL to the API using urls dict
         """
         return urlunparse((self.protocol, '%s:%s' % (self.domain, self.port),
-                           '%s/api%s' % (self.prefix, URLS[key]),
+                           '%s/api/v1%s' % (self.prefix, URLS[key]),
                            '', '', ''))
 
     def validate_manifest(self, manifest_url):
