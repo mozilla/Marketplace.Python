@@ -128,6 +128,16 @@ def get_screenshot(client, screenshot_id):
                 ['%s: %s' % (k, v) for k, v in content.items()])}
 
 
+def add_content_ratings(client, app_id, submission_id, security_code):
+    response = client.add_content_ratings(app_id, submission_id, security_code)
+    if response.status_code != 204:
+        return {'success': False,
+                'message': 'Error, status code: %d, \nMessage: %s' % (
+                    response.status_code, response.content)}
+    return {'success': True,
+            'message': 'Content ratings added'}
+
+
 def del_screenshot(client, screenshot_id):
     response = client.del_screenshot(screenshot_id)
     if response.status_code != 204:
@@ -150,6 +160,7 @@ def get_categories(client):
         message += '%s: %s\n' % (cat['id'], cat['name'])
     return {'success': True,
             'message': message}
+
 
 def app_state(client, app_id, status=None, disabled_by_user=None):
     response = client.app_state(app_id, status, disabled_by_user)

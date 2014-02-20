@@ -67,9 +67,12 @@ class Connection:
         """Extract error reason from the response. It might be either
         the 'reason' or the entire response
         """
-        body = response.json
-        if body and 'reason' in body:
-            return body['reason']
+        try:
+            body = response.json()
+            if body and 'reason' in body:
+                return body['reason']
+        except ValueError:
+            pass
         return response.content
 
     def fetch(self, method, url, data=None, expected_status_code=None):

@@ -217,8 +217,14 @@ class TestClient(unittest.TestCase):
 
     def test_enable(self):
         resp = {"status": "pending",
-                "disabled_by_user":True}
+                "disabled_by_user": True}
         requests.patch = Mock(return_value=Response(202, json.dumps(resp)))
 
         response = self.marketplace.app_state(123, status='pending', disabled_by_user='True')
-        eq_(response.status_code,202)
+        eq_(response.status_code, 202)
+
+    def test_add_content_ratings(self):
+        requests.post = Mock(return_value=Response(204))
+
+        response = self.marketplace.add_content_ratings(123, submission_id='Sub-123', security_code='ABC123')
+        eq_(response.status_code, 204)
