@@ -14,6 +14,7 @@ logger.addHandler(ch)
 COMMANDS = {'validate_manifest': commands.validate_manifest,
             'is_manifest_valid': commands.is_manifest_valid,
             'create': commands.create,
+            'delete': commands.delete,
             'list_webapps': commands.list_webapps,
             'status': commands.status,
             'update': commands.update,

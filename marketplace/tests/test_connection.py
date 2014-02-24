@@ -26,7 +26,7 @@ class Response(requests.Response):
         self._content = content
 
 
-class TestClient(unittest.TestCase):
+class TestConnection(unittest.TestCase):
 
     def setUp(self):
         self.conn = Connection(consumer_key='key', consumer_secret='secret')
