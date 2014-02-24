@@ -30,6 +30,7 @@ URLS = {'validate': '/apps/validation/',
         'create_screenshot': '/apps/app/%s/preview/',
         'screenshot': '/apps/preview/%s/',
         'categories': '/apps/category/',
+        'content_ratings': '/apps/app/%s/content_ratings/',
         'enable': '/apps/status/%s/'}
 
 
@@ -221,6 +222,19 @@ class Client:
         """
         return self.conn.fetch('DELETE',
                                self.url('screenshot') % screenshot_id)
+
+    def add_content_ratings(self, app_id, submission_id, security_code):
+        """Add content ratings to the web app identified by by ``app_id``,
+        using the specified submission id and security code.
+
+        :returns: HttpResponse:
+            * status_code (int) 204 is successful
+        """
+        url = self.url('content_ratings') % app_id
+        return self.conn.fetch('POST', url,
+                               {'submission_id': '%s' % submission_id,
+                                'security_code': '%s' % security_code
+                                })
 
     def get_categories(self):
         """Get all categories from Marketplae

@@ -20,6 +20,7 @@ COMMANDS = {'validate_manifest': commands.validate_manifest,
             'add_screenshot': commands.add_screenshot,
             'get_screenshot': commands.get_screenshot,
             'del_screenshot': commands.del_screenshot,
+            'add_content_ratings': commands.add_content_ratings,
             'get_categories': commands.get_categories,
             'app_state': commands.app_state}
 
