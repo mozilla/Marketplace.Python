@@ -27,7 +27,7 @@ URLS = {'validate': '/apps/validation/',
         'validation_result': '/apps/validation/%s/',
         'create': '/apps/app/',
         'app': '/apps/app/%s/',
-        'create_screenshot': '/apps/preview/?app=%s',
+        'create_screenshot': '/apps/app/%s/preview/',
         'screenshot': '/apps/preview/%s/',
         'categories': '/apps/category/',
         'enable': '/apps/status/%s/'}
