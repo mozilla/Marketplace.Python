@@ -176,14 +176,10 @@ class TestClient(unittest.TestCase):
         eq_(content['manifest'], '0a650e5e4c434b5cb60c5495c0d88a89')
 
     def test_delete(self):
-        raise SkipTest()
         requests.delete = Mock(return_value=Response(204, ''))
         response = self.marketplace.delete(1)
         eq_(response.status_code, 204)
         assert not response.content
-
-    def test_delete_not_implemented(self):
-        self.assertRaises(NotImplementedError, self.marketplace.delete, 1)
 
     def test_add_screenshot(self):
         path = lambda *a: os.path.join(

@@ -177,10 +177,12 @@ class Client:
 
     def delete(self, app_id):
         """Delete an app from Marketplace
+
+        :returns: HttpResponse:
+            * status_code (int) 204 if successful
         """
-        # XXX: This isn't yet implemented on API
-        # return self.conn.fetch('DELETE', self.url('app') % app_id)
-        raise NotImplementedError()
+        return self.conn.fetch('DELETE',
+                               self.url('app') % app_id)
 
     def create_screenshot(self, app_id, filename, position=1):
         """Add a screenshot to the web app identified by by ``app_id``.

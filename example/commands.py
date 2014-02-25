@@ -42,6 +42,16 @@ def create(client, manifest_id):
                 'message': response.content}
 
 
+def delete(client, app_id):
+    response = client.delete(app_id)
+    if response.status_code != 204:
+        return {'success': False,
+                'message': 'Error, status code: %d, \nMessage: %s' % (
+                    response.status_code, response.content)}
+    return {'success': True,
+            'message': 'App deleted'}
+
+
 def list_webapps(client):
     response = client.list_webapps()
     content = json.loads(response.content)
