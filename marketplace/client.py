@@ -230,7 +230,7 @@ class Client:
         using the specified submission id and security code.
 
         :returns: HttpResponse:
-            * status_code (int) 204 is successful
+            * status_code (int) 201 is successful
         """
         url = self.url('content_ratings') % app_id
         return self.conn.fetch('POST', url,
