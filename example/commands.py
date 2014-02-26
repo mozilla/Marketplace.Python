@@ -140,7 +140,7 @@ def get_screenshot(client, screenshot_id):
 
 def add_content_ratings(client, app_id, submission_id, security_code):
     response = client.add_content_ratings(app_id, submission_id, security_code)
-    if response.status_code != 204:
+    if response.status_code != 201:
         return {'success': False,
                 'message': 'Error, status code: %d, \nMessage: %s' % (
                     response.status_code, response.content)}

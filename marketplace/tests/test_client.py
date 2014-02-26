@@ -220,7 +220,7 @@ class TestClient(unittest.TestCase):
         eq_(response.status_code, 202)
 
     def test_add_content_ratings(self):
-        requests.post = Mock(return_value=Response(204))
+        requests.post = Mock(return_value=Response(201))
 
         response = self.marketplace.add_content_ratings(123, submission_id='Sub-123', security_code='ABC123')
-        eq_(response.status_code, 204)
+        eq_(response.status_code, 201)
