@@ -16,8 +16,7 @@ Testing
 
 Install test environment::
 
-    pip install mock
-    pip install nose
+    pip install -r marketplace/requirements.txt
 
 Test::
 

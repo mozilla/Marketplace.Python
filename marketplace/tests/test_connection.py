@@ -4,7 +4,7 @@ import unittest
 import urllib
 
 import requests
-import oauth2 as oauth
+from oauthlib import oauth1
 
 from mock import Mock
 
@@ -66,8 +66,8 @@ class TestConnection(unittest.TestCase):
             Connection._get_error_reason(Response(204, resp)),
             resp)
 
-    def test_set_consumer(self):
-        assert isinstance(self.conn.consumer, oauth.Consumer)
+    def test_set_oauth_client(self):
+        assert isinstance(self.conn.oauth_client, oauth1.Client)
 
     def test_prepare_request(self):
         prepared = self.conn.prepare_request('GET', 'http://example.com')

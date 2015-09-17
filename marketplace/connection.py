@@ -3,11 +3,10 @@
 
 import json
 import logging
-import time
 import urllib
 
-import oauth2 as oauth
 import requests
+from oauthlib import oauth1
 
 log = logging.getLogger('marketplace.%s' % __name__)
 
@@ -18,48 +17,37 @@ class NotExpectedStatusCode(requests.exceptions.HTTPError):
     pass
 
 
-def _get_args(consumer):
-    """Provide a dict with oauth data
-    """
-    return dict(
-        oauth_consumer_key=consumer.key,
-        oauth_nonce=oauth.generate_nonce(),
-        oauth_signature_method='HMAC-SHA1',
-        oauth_timestamp=int(time.time()),
-        oauth_version='1.0')
-
-
 class Connection:
-    """ Keeps the consumer class and provides the way to connect to the
+    """ Keeps the oauth client class and provides the way to connect to the
     Marketplace API
     """
-    signature_method = oauth.SignatureMethod_HMAC_SHA1()
-    consumer = None
-
     def __init__(self, consumer_key, consumer_secret):
-        self.set_consumer(consumer_key, consumer_secret)
+        self.set_oauth_client(consumer_key, consumer_secret)
 
-    def set_consumer(self, consumer_key, consumer_secret):
-        """Sets the consumer attribute
+    def set_oauth_client(self, consumer_key, consumer_secret):
+        """Sets the oauth_client attribute
         """
-        self.consumer = oauth.Consumer(consumer_key, consumer_secret)
+        self.oauth_client = oauth1.Client(consumer_key, consumer_secret)
 
     def prepare_request(self, method, url, body=''):
-        """Adds consumer and signs the request
+        """Prepare the request body and headers
 
         :returns: headers of the signed request
         """
-        req = oauth.Request(method=method, url=url,
-                            parameters=_get_args(self.consumer))
-        req.sign_request(self.signature_method, self.consumer, None)
-
-        headers = req.to_header()
-        headers['Content-type'] = 'application/json'
+        headers = {
+            'Content-type': 'application/json',
+        }
+        # Note: we don't pass body to sign() since it's only for bodies that
+        # are form-urlencoded. Similarly, we don't care about the body that
+        # sign() returns.
+        uri, signed_headers, signed_body = self.oauth_client.sign(
+            url, http_method=method, headers=headers)
         if body:
             if method == 'GET':
                 body = urllib.urlencode(body)
             else:
                 body = json.dumps(body)
+        headers.update(signed_headers)
         return {"headers": headers, "data": body}
 
     @staticmethod
