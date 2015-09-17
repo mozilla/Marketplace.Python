@@ -1,0 +1,6 @@
+language: python
+python:
+  - "2.7"
+install: "pip install -r marketplace/requirements.txt --use-mirrors"
+script: nosetests
+sudo: false

@@ -11,8 +11,6 @@ import mimetypes
 
 from base64 import b64encode
 
-import oauth2 as oauth
-
 from urlparse import urlunparse
 
 from .connection import Connection
@@ -37,8 +35,6 @@ URLS = {'validate': '/apps/validation/',
 class Client:
     """A base class to authenticate and work with Marketplace OAuth.
     """
-    signature_method = oauth.SignatureMethod_HMAC_SHA1()
-
     def __init__(self, domain=MARKETPLACE_DOMAIN,
                  protocol=MARKETPLACE_PROTOCOL,
                  port=MARKETPLACE_PORT,

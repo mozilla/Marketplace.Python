@@ -21,4 +21,4 @@ with Marketplace.
 You may find the source code and collaborate your time and experience at
 https://github.com/mozilla/Marketplace.Python
 """,
-    install_requires=['httplib2', 'oauth2', 'requests'])
+    install_requires=['httplib2', 'oauthlib', 'requests'])
