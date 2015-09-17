@@ -5,6 +5,7 @@ setup(
     version='0.9.2',
     packages=['marketplace', ],
     license='Mozilla Public License (MPL 2.0)',
+    description="Mozilla Marketplace API client libraries",
     author='Piotr Zalewa',
     author_email='zalun@mozilla.com',
     url='https://github.com/mozilla/Marketplace.Python',
