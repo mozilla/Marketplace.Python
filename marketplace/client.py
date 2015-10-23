@@ -2,7 +2,7 @@
 A class to interact with Marketplace's api, using OAuth.
 
 For full spec please read Marketplace API documentation
-https://github.com/mozilla/zamboni/blob/master/docs/topics/api.rst
+http://firefox-marketplace-api.readthedocs.org/
 """
 
 import json
